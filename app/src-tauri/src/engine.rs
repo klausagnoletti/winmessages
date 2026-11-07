@@ -294,7 +294,7 @@ impl Engine {
                 .iter()
                 .map(|p| TrustedPhone {
                     id: p.id,
-                    display: format!("{} (…{})", p.number_with_dial_code, p.last_two_digits),
+                    display: format!("{} (...{})", p.number_with_dial_code, p.last_two_digits),
                 })
                 .collect(),
             Err(_) => vec![],
