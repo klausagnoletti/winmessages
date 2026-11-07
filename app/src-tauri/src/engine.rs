@@ -37,8 +37,6 @@ fn b64(s: &str) -> Vec<u8> {
 }
 
 fn baked() -> MacOSConfig {
-    // Fresh software-minted identity (serial Apple never manufactured) + software-generated
-    // stamp from the extracted kernel routine. PROVEN to register + deliver 2026-11-06.
     let mac: [u8; 6] = b64("8BiYGS+5").try_into().unwrap();
     MacOSConfig {
         inner: HardwareConfig {
@@ -66,9 +64,6 @@ fn baked() -> MacOSConfig {
     }
 }
 
-// A real, manufactured Macmini7,1 identity (pypush dump) that passes Apple's
-// first-sign-in activation gate. Used ONLY to activate the account; routing is
-// then done by the fresh unique identity in baked().
 #[allow(dead_code)]
 fn activator() -> MacOSConfig {
     let mac: [u8; 6] = b64("qGC2H1Am").try_into().unwrap();
@@ -353,7 +348,6 @@ impl Engine {
     }
 
     async fn finish_register(&self, mut account: Acc, email: String) -> Result<(), String> {
-        // The fresh-serial push connection from start() (matches baked() = routing identity).
         let connection = self.connection.lock().await.clone().ok_or("not started")?;
         account
             .update_postdata("Apple Device", None, &["icloud", "imessage", "facetime"])
@@ -362,9 +356,6 @@ impl Engine {
         let services = &[&MADRID_SERVICE, &MULTIPLEX_SERVICE, &FACETIME_SERVICE, &VIDEO_SERVICE];
         let identity = IDSNGMIdentity::new().map_err(|e| format!("identity: {e:?}"))?;
 
-        // Single-step registration with the proven fresh identity on its matching push
-        // connection. No activator pre-step: that used a burned serial and is unnecessary
-        // (the original "activation failed" was an account throttle, not a serial gate).
         let delegates = login_apple_delegates(
             &account,
             None,

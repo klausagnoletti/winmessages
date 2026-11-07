@@ -24,7 +24,6 @@ fn b64(s: &str) -> Vec<u8> {
     base64::engine::general_purpose::STANDARD.decode(s).unwrap()
 }
 
-// FRESH unique Macmini7,1 identity (empty _enc = hackintosh clean path).
 fn fresh() -> MacOSConfig {
     let mac: [u8; 6] = b64("8BiYGS+5").try_into().unwrap();
     MacOSConfig {
